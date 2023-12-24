@@ -1,0 +1,154 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "../protos/UR5e.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/tables/protos/Table.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/VarnishedPine.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/robotiq/protos/Robotiq2f140Gripper.proto"
+EXTERNPROTO "../protos/UR3e.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Parquetry.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.24354029142577088 0.5747571575018531 0.7812440952433758 0.8790381644164071
+  position -2.386296728263501 -2.6693740260281658 3.380213281078623
+}
+PointLight {
+  attenuation 0 0 0.2
+  intensity 3
+  location 0 0 3
+  radius 10
+}
+DirectionalLight {
+  direction 0.3 0.3 -1
+  intensity 2
+  on FALSE
+}
+RectangleArena {
+  translation 0 -0.5 0
+  floorSize 3 3
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+}
+WoodenBox {
+  translation 0.3 0.25 0.919955
+  rotation 0.6451343471558169 0.5572374855871157 -0.5227696039139871 4.833202987493304e-17
+  size 0.1 0.1 0.1
+  mass 0.2
+}
+Table {
+  translation 0.55 0.55 0
+  rotation 0 0 1 1.57
+  name "table1"
+  size 0.84 1.85 0.85
+  trayAppearance VarnishedPine {
+    colorOverride 0.1 0.1 0.1
+    textureTransform TextureTransform {
+      scale 10 10
+    }
+  }
+  legAppearance VarnishedPine {
+    colorOverride 0.1 0.1 0.1
+    textureTransform TextureTransform {
+      scale 4 5
+    }
+  }
+}
+UR3e {
+  hidden rotation_1 0 0 -1 3
+  hidden rotation_2 0 1 0 1.0707959999999999
+  hidden rotation_3 0 -1 0 1.2000026197241547
+  hidden rotation_4 0 1 0 0.3707954315507573
+  hidden rotation_5 0 0 -1 1.2000003686343688
+  hidden rotation_6 0 -1 0 1.199999657597384
+  translation 1.095 0.51 0.85
+  toolSlot [
+    Robotiq2f140Gripper {
+      rotation 1 0 0 -1.5707953071795862
+    }
+  ]
+  j0_pos -3.7
+  j1_pos -1.2
+  j2_pos -1.2
+  j3_pos -1.2
+  j4_pos -1.2
+  j5_pos -1.2
+}
+Table {
+  translation 1.05048 -0.52 0
+  rotation 0 0 1 1.57
+  name "table2"
+  size 1.25 0.84 0.85
+  trayAppearance VarnishedPine {
+    colorOverride 0.1 0.1 0.1
+    textureTransform TextureTransform {
+      scale 10 10
+    }
+  }
+  legAppearance VarnishedPine {
+    colorOverride 0.1 0.1 0.1
+    textureTransform TextureTransform {
+      scale 4 5
+    }
+  }
+}
+UR5e {
+  hidden rotation_1 0 0 -1 1.2000056813107598
+  hidden rotation_2 0 0.9999999999999999 0 0.3707924249679171
+  hidden rotation_3 0 -1 0 1.200006435438721
+  hidden rotation_4 0 1 0 0.37079460487680377
+  hidden rotation_5 0 0 -1 1.2000005004660972
+  hidden rotation_6 0 -1 0 1.1999995529651641
+  translation -0.165 0.51 0.85
+  name "UR5e_1"
+  controller "<extern>"
+  supervisor TRUE
+  toolSlot [
+    Robotiq2f140Gripper {
+      rotation 1 0 0 -1.5707953071795862
+    }
+  ]
+  j0_pos -1.2
+  j1_pos -1.2
+  j2_pos -1.2
+  j3_pos -1.2
+  j4_pos -1.2
+  j5_pos -1.2
+}
+UR5e {
+  hidden rotation_1 0 0 -1 1.2000056750539796
+  hidden rotation_2 0 1 0 0.3707924372456788
+  hidden rotation_3 0 -1 0 1.2000064384053306
+  hidden rotation_4 0 1 0 0.3707946046363295
+  hidden rotation_5 0 0 -1 1.2000005022376636
+  hidden rotation_6 0 -0.9999999999999999 0 1.199999555955397
+  translation 1.05 -0.925 0.85
+  rotation 0 0 1 -1.51
+  name "UR5e_2"
+  toolSlot [
+    Robotiq2f140Gripper {
+      rotation 1 0 0 -1.5707953071795862
+    }
+  ]
+  j0_pos -1.2
+  j1_pos -1.2
+  j2_pos -1.2
+  j3_pos -1.2
+  j4_pos -1.2
+  j5_pos -1.2
+}
+Wall {
+  translation 0.009999 1.01 0
+  rotation 0 0 1 -1.5707953071795862
+  size 0.05 3 2.4
+}
+Wall {
+  translation 1.52 -0.52 0
+  rotation 0 0 1 1.01503e-06
+  name "wall(1)"
+  size 0.05 3 2.4
+}
