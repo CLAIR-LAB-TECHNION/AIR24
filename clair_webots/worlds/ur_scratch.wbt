@@ -9,12 +9,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "../protos/UR3e.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/SolidBox.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.24354029142577088 0.5747571575018531 0.7812440952433758 0.8790381644164071
-  position -2.386296728263501 -2.6693740260281658 3.380213281078623
+  orientation -0.13488979445941798 0.2501831289432956 0.9587560405769752 0.7876235135029945
+  position -1.577473616051709 -2.275731221521585 2.0531314493630983
 }
 PointLight {
   attenuation 0 0 0.2
@@ -26,6 +27,24 @@ DirectionalLight {
   direction 0.3 0.3 -1
   intensity 2
   on FALSE
+}
+SolidBox {
+  translation 0.65 0.97 1.51
+  rotation 0 1 0 4.692820414042842e-06
+  size 1 0.01 1
+  appearance PBRAppearance {
+    baseColor 0.2 0.8 1
+    baseColorMap ImageTexture {
+      url [
+        "https://clair.cs.technion.ac.il/wp-content/themes/cgm/img/logo.png"
+      ]
+      repeatS FALSE
+      repeatT FALSE
+      filtering 5
+    }
+    roughness 0.5
+  }
+  enableBoundingObject FALSE
 }
 RectangleArena {
   translation 0 -0.5 0
@@ -61,9 +80,9 @@ Table {
 UR3e {
   hidden rotation_1 0 0 -1 3
   hidden rotation_2 0 1 0 1.0707959999999999
-  hidden rotation_3 0 -1 0 1.2000026197241547
+  hidden rotation_3 0 -1 0 1.200002619554632
   hidden rotation_4 0 1 0 0.3707954315507573
-  hidden rotation_5 0 0 -1 1.2000003686343688
+  hidden rotation_5 0 0 -1 1.2000003674277064
   hidden rotation_6 0 -1 0 1.199999657597384
   translation 1.095 0.51 0.85
   toolSlot [
@@ -97,12 +116,12 @@ Table {
   }
 }
 UR5e {
-  hidden rotation_1 0 0 -1 1.2000056813107598
-  hidden rotation_2 0 0.9999999999999999 0 0.3707924249679171
-  hidden rotation_3 0 -1 0 1.200006435438721
+  hidden rotation_1 0 0 -1 1.2000056812325925
+  hidden rotation_2 0 1 0 0.3707924249679171
+  hidden rotation_3 0 -1 0 1.2000064353697137
   hidden rotation_4 0 1 0 0.37079460487680377
   hidden rotation_5 0 0 -1 1.2000005004660972
-  hidden rotation_6 0 -1 0 1.1999995529651641
+  hidden rotation_6 0 -1 0 1.199999553959681
   translation -0.165 0.51 0.85
   name "UR5e_1"
   controller "<extern>"
@@ -123,7 +142,7 @@ UR5e {
   hidden rotation_1 0 0 -1 1.2000056750539796
   hidden rotation_2 0 1 0 0.3707924372456788
   hidden rotation_3 0 -1 0 1.2000064384053306
-  hidden rotation_4 0 1 0 0.3707946046363295
+  hidden rotation_4 0 1 0 0.3707946046363283
   hidden rotation_5 0 0 -1 1.2000005022376636
   hidden rotation_6 0 -0.9999999999999999 0 1.199999555955397
   translation 1.05 -0.925 0.85
@@ -151,4 +170,23 @@ Wall {
   rotation 0 0 1 1.01503e-06
   name "wall(1)"
   size 0.05 3 2.4
+}
+SolidBox {
+  translation 1.49 -0.001328 1.51
+  rotation 2.3464099999870814e-06 2.3464099999870814e-06 0.9999999999944944 1.5708
+  name "box(1)"
+  size 1 0.01 1
+  appearance PBRAppearance {
+    baseColor 0.2 0.8 1
+    baseColorMap ImageTexture {
+      url [
+        "https://clair.cs.technion.ac.il/wp-content/themes/cgm/img/logo.png"
+      ]
+      repeatS FALSE
+      repeatT FALSE
+      filtering 5
+    }
+    roughness 0.5
+  }
+  enableBoundingObject FALSE
 }
