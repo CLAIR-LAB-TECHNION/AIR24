@@ -35,10 +35,10 @@ RectangleArena {
   }
 }
 WoodenBox {
-  translation 0.3 0.25 0.919955
+  translation 0.421352 0.26702 0.899921
   rotation 0.6451343471558169 0.5572374855871157 -0.5227696039139871 4.833202987493304e-17
-  size 0.1 0.1 0.1
-  mass 0.2
+  size 0.05 0.05 0.05
+  mass 0.05
 }
 Table {
   translation 0.55 0.55 0
