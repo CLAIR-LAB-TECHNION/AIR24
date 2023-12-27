@@ -4,10 +4,11 @@ from controller import Robot, Supervisor
 UR5e_motor_indices = [0, 2, 4, 6, 8, 10]
 UR5e_sensor_indices = [1, 3, 5, 7, 9, 11]
 
-joints_init_state = [-3.7, 1.2, 1.2, 1.2, 1.2, 1.2]
+# joints_init_state = [-3.7, 1.2, 1.2, 1.2, 1.2, 1.2]
 
 
 class Gripper:
+    """ a class to abstract control over the gripper in Webots ROBITIQ 2 finger gripper """
     def __init__(self, robot):
         self._robot = robot
 
@@ -40,12 +41,13 @@ class Gripper:
 class UR5eRobot:
     """ a class to abstract control over the UR5e robot in Webots"""
 
-    def __init__(self, interval=32, max_velocity_scale=0.5, robot_name=None, initial_state=None):
+    def __init__(self, interval=32, max_velocity_scale=0.5, robot_name=None):
         """
-
         :param interval: The robot control interval (time between steps) in milliseconds.
         :param robot_name: Robot name in the Webots world. If None, it will be set automatically
             only if there is only one robot.
+        :param max_velocity_scale: The scale to apply to the max velocities between 0 and 1, where 1 is the robot
+            default velocity, which is quite fast and not that safe.
         :param initial_state: Initial position of the robot. If None, it will be set to a default one
         """
         self._robot = Robot()
@@ -67,29 +69,40 @@ class UR5eRobot:
         self.robot_step()
 
     def robot_step(self):
-        '''
-        advance one simulation step (for interval length)
-        '''
+        """
+        advance one simulation step (for self.interval length)
+        """
         self._robot.step(self.interval)
 
     def simulate_seconds(self, seconds):
-        '''
+        """
         advance in the simulation for a given number of seconds
-        '''
+        :param seconds: number of seconds to advance
+        """
         for _ in range(int(seconds * 1000 / self.interval)):
             self.robot_step()
 
     def set_target_config(self, joint_states):
+        """
+        set the target config of the robot, in the next simulation steps the robot will move to this config
+        :param joint_states: 6d vector of the desired joint states
+        :return:
+        """
         for motor, state in zip(self.joint_motors, joint_states):
             motor.setPosition(state)
         self.robot_step()
 
     def get_current_config(self):
+        """
+        get the current config of the robot
+        :return: 6d vector of the current joint states
+        """
         return [sensor.getValue() for sensor in self.joint_sensors]
 
     def move_to_config(self, joint_states, max_err=1e-3, max_time=5):
         """
-        move to a desired config, this method will run simulation until the robot is close enough
+        move to a desired config, this method will run simulation until the robot is close enough.
+        The robot might not be able to reach the target if there is an obstacle in the way.
         :param joint_states: the desired joint states
         :param max_err: maximum norm of error to define target arrival
         :param max_time: maximum time to try to reach the target
@@ -113,11 +126,31 @@ class UR5eRobot:
         self.robot_step()
 
     def open_gripper(self):
-        '''
+        """
         open the gripper all the way
-        '''
+        """
         self.gripper.open()
         self.robot_step()
+
+    def close_gripper_and_wait(self, gap=0.0, time=2):
+        """
+        close the gripper to a given gap between 0 and 1 (0 is fully closed, 1 is open) and run the simulation
+        to let it close
+        :param gap:
+        :param time: time to run simulation after gripper close command
+        :return:
+        """
+        self.close_gripper(gap)
+        self.simulate_seconds(time)
+
+    def open_gripper_and_wait(self, time=2):
+        '''
+        open the gripper all the way and run the simulation to let it open
+        :param time: time to run simulation after gripper open command
+        :return:
+        '''
+        self.open_gripper()
+        self.simulate_seconds(time)
 
     def scale_max_velocities(self, max_velocity_scale):
         '''
