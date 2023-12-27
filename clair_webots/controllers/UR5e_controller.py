@@ -11,7 +11,7 @@ if  __name__ == '__main__':
     # read the __init__ method documentation for more information
     ur5 = UR5eRobot()
 
-    # run tje simulation for half a second:
+    # run the simulation for half a second:
     ur5.simulate_seconds(0.5)
     # you can run it for one step as well, a step is 32 milliseconds by default:
     ur5.robot_step()
@@ -30,7 +30,7 @@ if  __name__ == '__main__':
     ur5.simulate_seconds(2)
     # we could have called robot.close_gripper_and_wait(0.0, 2) instead, and it would have done the same thing.
 
-    # we are going to pick up the box now, but if the robot will move to fast it will lose grasp and the box
+    # we are going to pick up the box now, but if the robot will move too fast it will lose grasp and the box
     # will fall, so we need to slow down the robot, we can do that by scaling the max velocities of the robot:
     ur5.scale_max_velocities(0.02)
     # we will now move the robot to a picked up state, but instead of using move_to_config we will run the
