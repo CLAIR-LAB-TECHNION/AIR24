@@ -8,34 +8,34 @@ UR5e_sensor_indices = [1, 3, 5, 7, 9, 11]
 
 
 class Gripper:
-    """ a class to abstract control over the gripper in Webots ROBITIQ 2 finger gripper """
+    """ a class to abstract control over the _gripper in Webots ROBITIQ 2 finger _gripper """
     def __init__(self, robot):
         self._robot = robot
 
-        self.finger_l = robot.getDevice('ROBOTIQ 2F-140 Gripper::left finger joint')
-        self.finger_r = robot.getDevice('ROBOTIQ 2F-140 Gripper::right finger joint')
+        self._finger_l = robot.getDevice('ROBOTIQ 2F-140 Gripper::left finger joint')
+        self._finger_r = robot.getDevice('ROBOTIQ 2F-140 Gripper::right finger joint')
 
-        self.finger_l.setAvailableTorque(10)
-        self.finger_r.setAvailableTorque(10)
-        self.finger_l.setVelocity(0.2)
-        self.finger_r.setVelocity(0.2)
+        self._finger_l.setAvailableTorque(10)
+        self._finger_r.setAvailableTorque(10)
+        self._finger_l.setVelocity(0.2)
+        self._finger_r.setVelocity(0.2)
 
-        self.l_limits = (self.finger_l.getMinPosition(), self.finger_l.getMaxPosition())
-        self.r_limits = (self.finger_r.getMinPosition(), self.finger_r.getMaxPosition())
+        self._l_limits = (self._finger_l.getMinPosition(), self._finger_l.getMaxPosition())
+        self._r_limits = (self._finger_r.getMinPosition(), self._finger_r.getMaxPosition())
 
     def close(self, gap=0.0):
         '''
         :param gap: The gap to leave, between 0 and 1 where 0 is fully closed
                 and 1 is open
         '''
-        position_left = self.l_limits[1] + gap * (self.l_limits[0] - self.l_limits[1])
-        position_right = self.r_limits[1] + gap * (self.r_limits[0] - self.r_limits[1])
-        self.finger_l.setPosition(position_left)
-        self.finger_r.setPosition(position_right)
+        position_left = self._l_limits[1] + gap * (self._l_limits[0] - self._l_limits[1])
+        position_right = self._r_limits[1] + gap * (self._r_limits[0] - self._r_limits[1])
+        self._finger_l.setPosition(position_left)
+        self._finger_r.setPosition(position_right)
 
     def open(self):
-        self.finger_l.setPosition(self.l_limits[0])
-        self.finger_r.setPosition(self.r_limits[0])
+        self._finger_l.setPosition(self._l_limits[0])
+        self._finger_r.setPosition(self._r_limits[0])
 
 
 class UR5eRobot:
@@ -53,19 +53,19 @@ class UR5eRobot:
         self._robot = Robot()
         self.interval = interval
 
-        self.joint_motors = [self._robot.getDeviceByIndex(i) for i in UR5e_motor_indices]
-        self.joint_sensors = [self._robot.getDeviceByIndex(i) for i in UR5e_sensor_indices]
-        self.joint_names = [motor.getName() for motor in self.joint_motors]
+        self._joint_motors = [self._robot.getDeviceByIndex(i) for i in UR5e_motor_indices]
+        self._joint_sensors = [self._robot.getDeviceByIndex(i) for i in UR5e_sensor_indices]
+        self._joint_names = [motor.getName() for motor in self._joint_motors]
 
-        for sensor in self.joint_sensors:
+        for sensor in self._joint_sensors:
             sensor.enable(self.interval)
 
         # save original joints max velocity:
-        self.original_max_velocities = [motor.getMaxVelocity() for motor in self.joint_motors]
+        self.original_max_velocities = [motor.getMaxVelocity() for motor in self._joint_motors]
         self.scale_max_velocities(max_velocity_scale)
 
-        self.gripper = Gripper(self._robot)
-        self.gripper.open()
+        self._gripper = Gripper(self._robot)
+        self._gripper.open()
         self.robot_step()
 
     def robot_step(self):
@@ -88,7 +88,7 @@ class UR5eRobot:
         :param joint_states: 6d vector of the desired joint states
         :return:
         """
-        for motor, state in zip(self.joint_motors, joint_states):
+        for motor, state in zip(self._joint_motors, joint_states):
             motor.setPosition(state)
         self.robot_step()
 
@@ -97,7 +97,7 @@ class UR5eRobot:
         get the current config of the robot
         :return: 6d vector of the current joint states
         """
-        return [sensor.getValue() for sensor in self.joint_sensors]
+        return [sensor.getValue() for sensor in self._joint_sensors]
 
     def move_to_config(self, joint_states, max_err=1e-3, max_time=5):
         """
@@ -119,25 +119,25 @@ class UR5eRobot:
 
     def close_gripper(self, gap=0.0):
         """
-        close the gripper to a given gap between 0 and 1 (0 is fully closed, 1 is open)
+        close the _gripper to a given gap between 0 and 1 (0 is fully closed, 1 is open)
         :param gap:
         """
-        self.gripper.close(gap)
+        self._gripper.close(gap)
         self.robot_step()
 
     def open_gripper(self):
         """
-        open the gripper all the way
+        open the _gripper all the way
         """
-        self.gripper.open()
+        self._gripper.open()
         self.robot_step()
 
     def close_gripper_and_wait(self, gap=0.0, time=2):
         """
-        close the gripper to a given gap between 0 and 1 (0 is fully closed, 1 is open) and run the simulation
+        close the _gripper to a given gap between 0 and 1 (0 is fully closed, 1 is open) and run the simulation
         to let it close
         :param gap:
-        :param time: time to run simulation after gripper close command
+        :param time: time to run simulation after _gripper close command
         :return:
         """
         self.close_gripper(gap)
@@ -145,8 +145,8 @@ class UR5eRobot:
 
     def open_gripper_and_wait(self, time=2):
         '''
-        open the gripper all the way and run the simulation to let it open
-        :param time: time to run simulation after gripper open command
+        open the _gripper all the way and run the simulation to let it open
+        :param time: time to run simulation after _gripper open command
         :return:
         '''
         self.open_gripper()
@@ -158,5 +158,5 @@ class UR5eRobot:
         :param max_velocity_scale: the scale to apply to the max velocities between 0 and 1
             1 means robot full velocity.
         '''
-        for motor, orig_vel in zip(self.joint_motors, self.original_max_velocities):
+        for motor, orig_vel in zip(self._joint_motors, self.original_max_velocities):
             motor.setVelocity(max_velocity_scale * orig_vel)
