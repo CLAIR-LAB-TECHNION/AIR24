@@ -12,7 +12,8 @@ if  __name__ == '__main__':
     ur5 = UR5eRobot()
 
     # run the simulation for half a second:
-    ur5.simulate_seconds(0.5)
+    ur5.sicontrol
+    conds(0.5)
     # you can run it for one step as well, a step is 32 milliseconds by default:
     ur5.robot_step()
 

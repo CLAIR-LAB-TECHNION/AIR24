@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<robot name="UR5e">
+    <webots>
+        <plugin type="clair_package.ur5_driver.UR5Driver" />
+    </webots>
+</robot>
