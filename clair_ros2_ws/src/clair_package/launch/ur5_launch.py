@@ -9,7 +9,6 @@ from webots_ros2_driver.webots_controller import WebotsController
 def generate_launch_description():
     package_dir = get_package_share_directory('clair_package')
     robot_description_path = os.path.join(package_dir, 'resource', 'ur5e.urdf')
-    # TODO: merge urdfs
 
     webots = WebotsLauncher(world=os.path.join(package_dir, 'worlds', 'ur_scratch.wbt'))
     robot_driver = WebotsController(

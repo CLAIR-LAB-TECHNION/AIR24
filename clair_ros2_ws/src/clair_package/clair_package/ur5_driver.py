@@ -11,8 +11,10 @@ class UR5Driver:
         self._robot = webots_node.robot
 
         self._joint_motors = [self._robot.getDeviceByIndex(i) for i in UR5e_motor_indices]
-        self._joint_sensors = [self._robot.getDeviceByIndex(i) for i in UR5e_sensor_indices]
         self._joint_names = [motor.getName() for motor in self._joint_motors]
+        self._joint_sensors = [self._robot.getDeviceByIndex(i) for i in UR5e_sensor_indices]
+        for sensor in self._joint_sensors:
+            sensor.enable(32)
 
         self._target_position = JointState()
         self._target_position.name = self._joint_names
@@ -20,7 +22,9 @@ class UR5Driver:
         rclpy.init()
 
         self._node = rclpy.create_node('ur5_driver')
-        self._node.create_subscription(JointState, 'joint_states', self._joint_state_callback, 5)
+        self._node.create_subscription(JointState, 'target_joint_states', self._joint_state_callback, 1)
+
+        self._joint_state_publisher = self._node.create_publisher(JointState, 'joint_states', 10)
 
         self._logger = self._node.get_logger()
 
@@ -44,5 +48,13 @@ class UR5Driver:
             for i, pos in enumerate(self._target_position.position):
                 self._joint_motors[i].setPosition(pos)
 
-    def get_webots_joint_positions(self):
+        self._publish_joint_states()
+
+    def _publish_joint_states(self, ):
+        joint_state = JointState()
+        joint_state.name = self._joint_names
+        joint_state.position = self._get_webots_joint_positions()
+        self._joint_state_publisher.publish(joint_state)
+
+    def _get_webots_joint_positions(self):
         return [s.getValue() for s in self._joint_sensors]
