@@ -5,9 +5,9 @@ from sensor_msgs.msg import JointState
 UR5e_motor_indices = [0, 2, 4, 6, 8, 10]
 UR5e_sensor_indices = [1, 3, 5, 7, 9, 11]
 
+
 class UR5Driver:
     def init(self, webots_node, properties):
-        # print('UR5Driver.__init__')
         self._robot = webots_node.robot
 
         self._joint_motors = [self._robot.getDeviceByIndex(i) for i in UR5e_motor_indices]

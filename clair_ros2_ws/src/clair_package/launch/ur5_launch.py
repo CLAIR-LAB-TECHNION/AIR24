@@ -11,6 +11,7 @@ def generate_launch_description():
     robot_description_path = os.path.join(package_dir, 'resource', 'ur5e.urdf')
 
     webots = WebotsLauncher(world=os.path.join(package_dir, 'worlds', 'ur_scratch.wbt'))
+
     robot_driver = WebotsController(
         robot_name='UR5e_1',
         parameters = [{'robot_description': robot_description_path}],
