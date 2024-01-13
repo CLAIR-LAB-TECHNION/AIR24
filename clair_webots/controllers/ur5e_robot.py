@@ -1,5 +1,8 @@
 import numpy as np
 from controller import Robot, Supervisor
+from math import pi, cos, sin, atan2, acos, sqrt, asin
+from inverse_kinematics.inverse_kinematics import inverse_kinematic_solution, DH_matrix_UR5e
+
 
 UR5e_motor_indices = [0, 2, 4, 6, 8, 10]
 UR5e_sensor_indices = [1, 3, 5, 7, 9, 11]
@@ -160,3 +163,53 @@ class UR5eRobot:
         '''
         for motor, orig_vel in zip(self._joint_motors, self.original_max_velocities):
             motor.setVelocity(max_velocity_scale * orig_vel)
+
+
+    def get_ik_solution(self, position, orientation):
+        '''
+        Get the inverse kinematics solution for the desired position and orientation of the end effector.
+        The position and angle are relative to the robot's frame of reference and not to the world!
+        :param position: 3d vector of the desired position
+        :param orientation: 3d vector of the desired orientation in euler angles
+        '''
+        alpha, beta, gamma = orientation
+        tx, ty, tz = position
+
+        alpha, beta, gamma = orientation
+        tx, ty, tz = position
+        transform = np.matrix([[cos(beta) * cos(gamma), sin(alpha) * sin(beta) * cos(gamma) - cos(alpha) * sin(gamma),
+                                cos(alpha) * sin(beta) * cos(gamma) + sin(alpha) * sin(gamma), tx],
+                               [cos(beta) * sin(gamma), sin(alpha) * sin(beta) * sin(gamma) + cos(alpha) * cos(gamma),
+                                cos(alpha) * sin(beta) * sin(gamma) - sin(alpha) * cos(gamma), ty],
+                               [-sin(beta), sin(alpha) * cos(beta), cos(alpha) * cos(beta), tz],
+                               [0, 0, 0, 1]])
+
+        iks = inverse_kinematic_solution(DH_matrix_UR5e, transform)
+        return iks[:, 0]
+
+
+    def set_tartget_pose_with_ik(self, position, orientation):
+        '''
+        Set the target pose of the robot using inverse kinematics to get the desired joint states from the desired
+        position and orientation of the end effector. The position and angle are relative to the robot's frame of
+        reference and not to the world!
+        :param position: 3d vector of the desired position
+        :param orientation: 3d vector of the desired orientation in euler angles
+        '''
+
+        iks = self.get_ik_solution(position, orientation)
+        self.set_target_config(iks)
+
+    def move_to_pose_with_ik(self, position, orientation, max_err=1e-3, max_time=5):
+        '''
+        Move the robot to a desired pose using inverse kinematics to get the desired joint states from the desired
+        position and orientation of the end effector. The position and angle are relative to the robot's frame of
+        reference and not to the world!
+        :param position: 3d vector of the desired position
+        :param orientation: 3d vector of the desired orientation in euler angles
+        :param max_err: maximum norm of error to define target arrival
+        :param max_time: maximum time to try to reach the target
+        :return: True if target is reached, false otherwise
+        '''
+        iks = self.get_ik_solution(position, orientation)
+        return self.move_to_config(iks, max_err, max_time)
