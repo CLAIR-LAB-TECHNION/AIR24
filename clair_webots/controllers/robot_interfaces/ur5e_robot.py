@@ -1,59 +1,31 @@
 import numpy as np
 from controller import Robot, Supervisor
-from math import pi, cos, sin, atan2, acos, sqrt, asin
+from math import cos, sin
 from inverse_kinematics.inverse_kinematics import inverse_kinematic_solution, DH_matrix_UR5e
 
 
 UR5e_motor_indices = [0, 2, 4, 6, 8, 10]
 UR5e_sensor_indices = [1, 3, 5, 7, 9, 11]
 
-# joints_init_state = [-3.7, 1.2, 1.2, 1.2, 1.2, 1.2]
-
-
-class Gripper:
-    """ a class to abstract control over the _gripper in Webots ROBITIQ 2 finger _gripper """
-    def __init__(self, robot):
-        self._robot = robot
-
-        self._finger_l = robot.getDevice('ROBOTIQ 2F-140 Gripper::left finger joint')
-        self._finger_r = robot.getDevice('ROBOTIQ 2F-140 Gripper::right finger joint')
-
-        self._finger_l.setAvailableTorque(10)
-        self._finger_r.setAvailableTorque(10)
-        self._finger_l.setVelocity(0.2)
-        self._finger_r.setVelocity(0.2)
-
-        self._l_limits = (self._finger_l.getMinPosition(), self._finger_l.getMaxPosition())
-        self._r_limits = (self._finger_r.getMinPosition(), self._finger_r.getMaxPosition())
-
-    def close(self, gap=0.0):
-        '''
-        :param gap: The gap to leave, between 0 and 1 where 0 is fully closed
-                and 1 is open
-        '''
-        position_left = self._l_limits[1] + gap * (self._l_limits[0] - self._l_limits[1])
-        position_right = self._r_limits[1] + gap * (self._r_limits[0] - self._r_limits[1])
-        self._finger_l.setPosition(position_left)
-        self._finger_r.setPosition(position_right)
-
-    def open(self):
-        self._finger_l.setPosition(self._l_limits[0])
-        self._finger_r.setPosition(self._r_limits[0])
-
 
 class UR5eRobot:
-    """ a class to abstract control over the UR5e robot in Webots"""
+    """
+    a class to abstract control over the UR5e robot in Webots, without a tool.
+    This class can be extended to robot with a tool such as gripper or camera by
+    implementing its functionality in the child class.
+    The goal of this class is to provide interface to robot motion.
+    """
 
     def __init__(self, interval=32, max_velocity_scale=0.5, robot_name=None):
         """
         :param interval: The robot control interval (time between steps) in milliseconds.
-        :param robot_name: Robot name in the Webots world. If None, it will be set automatically
-            only if there is only one robot.
         :param max_velocity_scale: The scale to apply to the max velocities between 0 and 1, where 1 is the robot
             default velocity, which is quite fast and not that safe.
-        :param initial_state: Initial position of the robot. If None, it will be set to a default one
+        :param robot_name: Robot name in the Webots world. If None, it will be set automatically
+            only if there is only one robot.
         """
-        self._robot = Robot()
+        # TODO: handle robot name
+        self._robot = Supervisor()
         self.interval = interval
 
         self._joint_motors = [self._robot.getDeviceByIndex(i) for i in UR5e_motor_indices]
@@ -67,8 +39,6 @@ class UR5eRobot:
         self.original_max_velocities = [motor.getMaxVelocity() for motor in self._joint_motors]
         self.scale_max_velocities(max_velocity_scale)
 
-        self._gripper = Gripper(self._robot)
-        self._gripper.open()
         self.robot_step()
 
     def robot_step(self):
@@ -120,41 +90,6 @@ class UR5eRobot:
                 return True
         return False
 
-    def close_gripper(self, gap=0.0):
-        """
-        close the _gripper to a given gap between 0 and 1 (0 is fully closed, 1 is open)
-        :param gap:
-        """
-        self._gripper.close(gap)
-        self.robot_step()
-
-    def open_gripper(self):
-        """
-        open the _gripper all the way
-        """
-        self._gripper.open()
-        self.robot_step()
-
-    def close_gripper_and_wait(self, gap=0.0, time=2):
-        """
-        close the _gripper to a given gap between 0 and 1 (0 is fully closed, 1 is open) and run the simulation
-        to let it close
-        :param gap:
-        :param time: time to run simulation after _gripper close command
-        :return:
-        """
-        self.close_gripper(gap)
-        self.simulate_seconds(time)
-
-    def open_gripper_and_wait(self, time=2):
-        '''
-        open the _gripper all the way and run the simulation to let it open
-        :param time: time to run simulation after _gripper open command
-        :return:
-        '''
-        self.open_gripper()
-        self.simulate_seconds(time)
-
     def scale_max_velocities(self, max_velocity_scale):
         '''
         scale the max velocities of the joints
@@ -163,7 +98,6 @@ class UR5eRobot:
         '''
         for motor, orig_vel in zip(self._joint_motors, self.original_max_velocities):
             motor.setVelocity(max_velocity_scale * orig_vel)
-
 
     def get_ik_solution(self, position, orientation):
         '''
@@ -186,7 +120,6 @@ class UR5eRobot:
 
         iks = inverse_kinematic_solution(DH_matrix_UR5e, transform)
         return iks[:, 0]
-
 
     def set_tartget_pose_with_ik(self, position, orientation):
         '''
