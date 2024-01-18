@@ -1,4 +1,4 @@
-from ur5e_robot import UR5eRobot
+from robot_interfaces.ur5e_robot_with_gripper import UR5eRobotWithGripper
 import numpy as np
 
 
@@ -16,7 +16,7 @@ if  __name__ == '__main__':
 
     orientation = [np.pi, 0, 0] # gripper facing downwards
 
-    ur5 = UR5eRobot()
+    ur5 = UR5eRobotWithGripper()
     ur5.simulate_seconds(0.1)
 
     # Rotate the base of the robot 180 degrees from its starting position. you can remove these lines,

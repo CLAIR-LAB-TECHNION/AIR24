@@ -1,5 +1,4 @@
-from ur5e_robot import UR5eRobot
-import numpy as np
+from robot_interfaces.ur5e_robot_with_gripper import UR5eRobotWithGripper
 
 
 box_grasp_config = [-0.7, -0.98, 1.4, -1.7, -1.4, -0.8]
@@ -9,7 +8,7 @@ picked_up_state = [- 0.6, -1.2, 1.4, -2.1, -1.4, -0.8]
 if  __name__ == '__main__':
     # create a robot instance, there are default arguments,
     # read the __init__ method documentation for more information
-    ur5 = UR5eRobot()
+    ur5 = UR5eRobotWithGripper()
 
     # run the simulation for half a second:
     ur5.simulate_seconds(0.5)
