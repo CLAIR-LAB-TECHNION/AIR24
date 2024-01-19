@@ -1,7 +1,9 @@
 import numpy as np
 from controller import Robot, Supervisor
 from math import cos, sin
-from inverse_kinematics.inverse_kinematics import inverse_kinematic_solution, DH_matrix_UR5e
+from inverse_kinematics.inverse_kinematics import forward_kinematic_solution, inverse_kinematic_solution,\
+    get_DH_matrix_UR5e
+from scipy.spatial.transform import Rotation
 
 
 UR5e_motor_indices = [0, 2, 4, 6, 8, 10]
@@ -26,6 +28,13 @@ class UR5eRobot:
         """
         # TODO: handle robot name
         self._robot = Supervisor()
+        self._robot_node = self._robot.getSelf()
+        self.robot_position = self._robot_node.getField('translation').getSFVec3f()
+        robot_rotation_quat = self._robot_node.getField('rotation').getSFRotation()
+        # rotation is in axis direction, rotation angle format. change to euler:
+        R = Rotation.from_rotvec(robot_rotation_quat[3] * np.array(robot_rotation_quat[:3]))
+        self.robot_rotation = R.as_euler('xyz', degrees=False)
+
         self.interval = interval
 
         self._joint_motors = [self._robot.getDeviceByIndex(i) for i in UR5e_motor_indices]
@@ -38,6 +47,8 @@ class UR5eRobot:
         # save original joints max velocity:
         self.original_max_velocities = [motor.getMaxVelocity() for motor in self._joint_motors]
         self.scale_max_velocities(max_velocity_scale)
+
+        self.tool_length = 0.135  # default, can be set by child classes
 
         self.robot_step()
 
@@ -118,7 +129,7 @@ class UR5eRobot:
                                [-sin(beta), sin(alpha) * cos(beta), cos(alpha) * cos(beta), tz],
                                [0, 0, 0, 1]])
 
-        iks = inverse_kinematic_solution(DH_matrix_UR5e, transform)
+        iks = inverse_kinematic_solution(get_DH_matrix_UR5e(self.tool_length), transform)
         return iks[:, 0]
 
     def set_tartget_pose_with_ik(self, position, orientation):
@@ -146,3 +157,18 @@ class UR5eRobot:
         '''
         iks = self.get_ik_solution(position, orientation)
         return self.move_to_config(iks, max_err, max_time)
+
+    def get_ee_pose(self,):
+        '''
+        Get the end effector pose
+        :return: end effector position, end effector rotation euler
+        '''
+        transform = forward_kinematic_solution(get_DH_matrix_UR5e(self.tool_length), self.get_current_config())
+        position = transform[:3, 3].flatten()
+        rotation = transform[:3, :3]
+
+        R = Rotation.from_matrix(rotation)
+        rotation_euler = R.as_euler('xyz', degrees=False)
+
+        return position, rotation_euler
+

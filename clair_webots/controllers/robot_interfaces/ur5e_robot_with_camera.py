@@ -16,6 +16,12 @@ class UR5eRobotWithCamera(UR5eRobot):
         self._camera.enable(32)
         self._depth_camera.enable(32)
 
+        self._camera_node = self._robot_node.getField('toolSlot').getMFNode(0)
+        camera_translation = self._camera_node.getField('translation').getSFVec3f()
+        self.tool_length = camera_translation[1]
+        # we take y translation because we had to rotate the camera in the world. Should have taken z otherwise.
+        # for more general solution, we can retrieve the camera rotation and calculate the tool length from it.
+
         self.robot_step()
 
     def get_camera_image(self):
