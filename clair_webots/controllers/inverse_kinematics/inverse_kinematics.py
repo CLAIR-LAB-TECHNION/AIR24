@@ -11,12 +11,12 @@ from math import pi, cos, sin, atan2, acos, sqrt, asin
 #                             [0, 0, 0.0921]])
 
 def get_DH_matrix_UR5e(tool_length):
-    return np.matrix([[0, pi / 2.0, 0.089159],
+    return np.matrix([[0, pi / 2.0, 0.1625],
                             [-0.425, 0, 0],
-                            [-0.39225, 0, 0],
-                            [0, pi / 2.0, 0.10915],
-                            [0, -pi / 2.0, 0.09465],
-                            [0, 0, 0.0823 + tool_length]])
+                            [-0.3922, 0, 0],
+                            [0, pi / 2.0, 0.1333],
+                            [0, -pi / 2.0, 0.0997],
+                            [0, 0, 0.0996 + tool_length]])
 
 
 def mat_transtorm_DH(DH_matrix, n, edges=np.matrix([[0], [0], [0], [0], [0], [0]])):
