@@ -158,13 +158,13 @@ class UR5eRobot:
         iks = self.get_ik_solution(position, orientation)
         return self.move_to_config(iks, max_err, max_time)
 
-    def get_ee_pose(self,):
+    def get_ee_pose_robot(self,):
         '''
-        Get the end effector pose
+        Get the end effector pose in robot frame
         :return: end effector position, end effector rotation euler
         '''
         transform = forward_kinematic_solution(get_DH_matrix_UR5e(self.tool_length), self.get_current_config())
-        position = transform[:3, 3].flatten()
+        position = np.array(transform[:3, 3]).reshape(3)
         rotation = transform[:3, :3]
 
         R = Rotation.from_matrix(rotation)
@@ -172,3 +172,20 @@ class UR5eRobot:
 
         return position, rotation_euler
 
+    def get_ee_pose_world(self):
+        '''
+        Get the end effector pose in world frame
+        :return: end effector position, end effector rotation euler
+        '''
+        position_r_frame, rotation_euler_r_frame = self.get_ee_pose_robot()
+        robot_position = np.array(self.robot_position)
+        robot_rotation = np.array(self.robot_rotation)
+
+        robot_rotation_matrix = Rotation.from_euler('xyz', robot_rotation, degrees=False).as_matrix()
+        rotation_in_r_frame_matrix = Rotation.from_euler('xyz', rotation_euler_r_frame, degrees=False).as_matrix()
+        world_rotation_matrix = rotation_in_r_frame_matrix @ robot_rotation_matrix
+        world_rotation_euler = Rotation.from_matrix(world_rotation_matrix).as_euler('xyz', degrees=False)
+
+        world_position = robot_position + robot_rotation_matrix @ np.array(position_r_frame).T
+
+        return world_position, world_rotation_euler
