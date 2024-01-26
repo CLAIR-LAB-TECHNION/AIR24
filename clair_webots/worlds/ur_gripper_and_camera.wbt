@@ -141,12 +141,12 @@ UR5e {
   j5_pos -1.2
 }
 UR5e {
-  hidden rotation_1 0 0 1 0.299994324946021
-  hidden rotation_2 0 1 0 1.2707924372456783
-  hidden rotation_3 0 -0.9999999999999999 0 1.0000064384053309
-  hidden rotation_4 0 1 0 0.27079460463632776
-  hidden rotation_5 0 0 -1 1.2000005022376636
-  hidden rotation_6 0 1 0 4.4404460268471747e-07
+  hidden rotation_1 0 0 1 0.29999432502427403
+  hidden rotation_2 0 1 0 0.7387924372456774
+  hidden rotation_3 0 -1 0 6.438405330847076e-06
+  hidden rotation_4 0 0.9999999999999999 0 2.9407946046363276
+  hidden rotation_5 0 0 1 1.1999994977623358
+  hidden rotation_6 0 0.9999999999999999 0 3.140000444044603
   translation 1.05 -0.925 0.85
   rotation 0 0 1 1.63159
   name "UR5e_2"
@@ -162,11 +162,11 @@ UR5e {
     }
   ]
   j0_pos 0.3
-  j1_pos -0.3
-  j2_pos -1
-  j3_pos -1.3
-  j4_pos -1.2
-  j5_pos 0
+  j1_pos -0.832
+  j2_pos 0
+  j3_pos 1.37
+  j4_pos 1.2
+  j5_pos 3.14
 }
 Wall {
   translation 0.009999 1.01 0
