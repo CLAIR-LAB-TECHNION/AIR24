@@ -132,7 +132,7 @@ class UR5eRobot:
         iks = inverse_kinematic_solution(get_DH_matrix_UR5e(self.tool_length), transform)
         return iks[:, 0]
 
-    def set_tartget_pose_with_ik(self, position, orientation):
+    def set_target_pose_with_ik(self, position, orientation):
         '''
         Set the target pose of the robot using inverse kinematics to get the desired joint states from the desired
         position and orientation of the end effector. The position and angle are relative to the robot's frame of
