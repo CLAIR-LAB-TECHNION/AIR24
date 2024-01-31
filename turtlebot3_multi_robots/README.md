@@ -50,16 +50,20 @@ Rviz2 output for all 4 robots
 
 
 mkdir -p robot_ws/src
+
 cd robot_ws/src
 
 clone turtlebot3_multi_robots from AIR24 repo
 
 cd robot_ws
+
 source /opt/ros/humble/setup.bash
+
 rosdep install --from-paths src -r -y
 
 
 ros2 launch turtlebot3_multi_robot gazebo_multi_nav2_world.launch.py
+
 ros2 launch turtlebot3_multi_robot gazebo_multi_nav2_world.launch.py enable_drive:=True  
 
 
