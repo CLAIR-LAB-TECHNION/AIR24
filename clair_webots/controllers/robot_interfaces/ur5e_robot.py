@@ -202,3 +202,14 @@ class UR5eRobot:
         R = Rotation.from_rotvec(object_rotation[3] * np.array(object_rotation[:3]))
         object_rotation_euler = R.as_euler('xyz', degrees=False)
         return object_position, object_rotation_euler
+
+    def set_object_position_and_orientation_euler(self, object_def, position, orientation):
+        '''
+        Set the position and orientation of an object in the world frame
+        :param object_name: the name of the object
+        :param position: object position
+        :param orientation: object rotation euler
+        '''
+        object_node = self._robot.getFromDef(object_def)
+        object_node.getField('translation').setSFVec3f(position)
+        object_node.getField('rotation').setSFRotation(Rotation.from_euler('xyz', orientation, degrees=False).as_rotvec())
