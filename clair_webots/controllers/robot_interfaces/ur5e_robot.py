@@ -26,13 +26,12 @@ class UR5eRobot:
         :param robot_name: Robot name in the Webots world. If None, it will be set automatically
             only if there is only one robot.
         """
-        # TODO: handle robot name
         self._robot = Supervisor()
         self._robot_node = self._robot.getSelf()
         self.robot_position = self._robot_node.getField('translation').getSFVec3f()
-        robot_rotation_quat = self._robot_node.getField('rotation').getSFRotation()
+        robot_rotation_axisdir = self._robot_node.getField('rotation').getSFRotation()
         # rotation is in axis direction, rotation angle format. change to euler:
-        R = Rotation.from_rotvec(robot_rotation_quat[3] * np.array(robot_rotation_quat[:3]))
+        R = Rotation.from_rotvec(robot_rotation_axisdir[3] * np.array(robot_rotation_axisdir[:3]))
         self.robot_rotation = R.as_euler('xyz', degrees=False)
 
         self.interval = interval
@@ -189,3 +188,17 @@ class UR5eRobot:
         world_position = robot_position + robot_rotation_matrix @ np.array(position_r_frame).T
 
         return world_position, world_rotation_euler
+
+    def get_object_position_and_orientation_euler(self, object_def):
+        '''
+        Get the position and orientation of an object in the world frame
+        :param object_name: the name of the object
+        :return: object position, object rotation euler
+        '''
+        object_node = self._robot.getFromDef(object_def)
+        object_position = object_node.getField('translation').getSFVec3f()
+        object_rotation = object_node.getField('rotation').getSFRotation()
+        # convert to euler:
+        R = Rotation.from_rotvec(object_rotation[3] * np.array(object_rotation[:3]))
+        object_rotation_euler = R.as_euler('xyz', degrees=False)
+        return object_position, object_rotation_euler
