@@ -26,8 +26,6 @@ if __name__ == '__main__':
         ur5_cam.simulate_seconds(animation_intrval)
         images.append(ur5_cam.get_camera_image())
 
-    # TODO: run until simulation ends
-
     # plot animation:
     def animate(i):
         plt.cla()  # Clear the current axes
