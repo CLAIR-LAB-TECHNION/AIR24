@@ -212,4 +212,40 @@ class UR5eRobot:
         '''
         object_node = self._robot.getFromDef(object_def)
         object_node.getField('translation').setSFVec3f(position)
-        object_node.getField('rotation').setSFRotation(Rotation.from_euler('xyz', orientation, degrees=False).as_rotvec())
+
+        if np.linalg.norm(orientation) == 0:
+            rot_axis_angle = [0, 0, 1, 0]
+        else:
+            rotation_matrix = Rotation.from_euler('xyz', orientation, degrees=False).as_matrix()
+            angle = np.arccos((np.trace(rotation_matrix) - 1) / 2)
+            axis = [rotation_matrix[2, 1] - rotation_matrix[1, 2],
+                    rotation_matrix[0, 2] - rotation_matrix[2, 0],
+                    rotation_matrix[1, 0] - rotation_matrix[0, 1]]
+            norm = np.linalg.norm(axis)
+            rot_axis_angle = [axis[0] / norm, axis[1] / norm, axis[2] / norm, angle]
+
+        object_node.getField('rotation').setSFRotation(rot_axis_angle)
+
+    def get_object_angular_velocity(self, object_def):
+        '''
+        Get the linear velocity of an object
+        :param object_name: the name of the object
+        :return: object linear velocity
+        '''
+        object_node = self._robot.getFromDef(object_def)
+        object_velocity = object_node.getVelocity()
+        # 3 first elements are linear velocity, 3 last elements are angular velocity
+        angular_velocity = object_velocity[3:]
+        return angular_velocity
+
+    def set_object_angular_velocity(self, object_def, angular_velocity):
+        '''
+        Set the linear velocity of an object
+        :param object_name: the name of the object
+        :param angular_velocity: object linear velocity
+        '''
+        object_node = self._robot.getFromDef(object_def)
+        object_velocity = object_node.getVelocity()
+        object_velocity[3:] = angular_velocity
+        object_node.setVelocity(object_velocity)
+
